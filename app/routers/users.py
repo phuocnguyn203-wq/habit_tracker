@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from app.dependencies import get_db, get_current_user
+
 
 from sqlalchemy.orm import Session
 from app.schemas.users import Token, BaseUser
@@ -17,7 +17,7 @@ router = APIRouter(
     tags=['users']
 )
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/users/token')
+from app.dependencies import get_db, get_current_user
 
 @router.post('/token')
 async def login_for_access_token(

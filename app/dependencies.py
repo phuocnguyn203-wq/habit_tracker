@@ -2,7 +2,7 @@ from typing import Annotated
 
 from app.database.database import SessionLocal
 from fastapi import Depends, HTTPException, status
-from app.routers.users import oauth2_scheme
+from fastapi.security import OAuth2PasswordBearer
 from app.schemas.users import TokenData
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.orm import Session
@@ -12,6 +12,8 @@ from app.services.users import ALGORITHM, SECRET_KEY
 
 from app.services.users import get_user
 import jwt
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/users/token')
 
 
 def get_db():
