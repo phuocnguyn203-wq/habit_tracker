@@ -21,3 +21,14 @@ def create_habit_records(
         db,
         create_habit_record
     )
+
+@router.get('/{habit_id}')
+def get_habit_records(
+    db: Annotated[Session, Depends(get_db)],
+    habit_id: int,
+):
+    results = habit_records_service.get_records(
+        db,
+        habit_id
+    )
+    return results
