@@ -50,3 +50,19 @@ def modify_habit_records(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
         )
+
+@router.delete('/{record_id}')
+def delete_habit_record(
+    db: Annotated[Session, Depends(get_db)],
+    record_id: Annotated[int, Path()]
+):
+    try:
+        habit_records_service.delete_record(
+            db,
+            record_id
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
