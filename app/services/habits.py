@@ -45,3 +45,15 @@ def modify_habit(
         db.commit()
     else:
         raise ValueError(f'Habit {habit_id} does not exist')
+
+def delete_habit(
+    db: Session,
+    habit_id: int,
+):
+    result = db.execute(select(Habit).where(Habit.id==habit_id)).first()
+    if result is not None:
+        habit = result[0]
+        db.delete(habit)
+        db.commit()
+    else:
+        raise ValueError(f'Habit {habit_id} does not exist')
