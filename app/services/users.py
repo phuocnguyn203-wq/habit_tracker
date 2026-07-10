@@ -1,18 +1,15 @@
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
 
 import jwt
-from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 from sqlalchemy import select
 
 from sqlalchemy.orm import Session
 from app.models.models import User
-from app.schemas.users import CreateUser, UserInDB, TokenData, Token
+from app.schemas.users import UserInDB
 from app.config import SECRET_KEY
 
 ALGORITHM = 'HS256'
-ACCESS_TOKEN_MINUTES = 30
 
 password_hash =PasswordHash.recommended()
 
