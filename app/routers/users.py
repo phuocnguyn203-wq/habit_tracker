@@ -1,13 +1,12 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
-
+from fastapi import APIRouter, Depends, Body, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 
 from sqlalchemy.orm import Session
-from app.schemas.users import Token, BaseUser
+from app.schemas.users import CreateUser, Token, BaseUser
 
 from app.services.users import authenticate_user, create_access_token
+from app.services import users as user_service
 from datetime import timedelta
 
 ACCESS_TOKEN_MINUTES = 30
@@ -46,6 +45,16 @@ async def login_for_access_token(
         token_type='bearer'
     )
     
+@router.post('/create_user')
+def create_user(
+    db: Annotated[Session, Depends(get_db)],
+    create_user: Annotated[CreateUser, Body()],
+):
+    user_service.create_user(
+        db,
+        create_user
+    )
+
 @router.get('/user/me/')
 async def read_users_me(
     current_user: Annotated[BaseUser, Depends(get_current_user)]

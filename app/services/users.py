@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from sqlalchemy.orm import Session
 from app.models.models import User
-from app.schemas.users import UserInDB
+from app.schemas.users import UserInDB, CreateUser
 from app.config import SECRET_KEY
 
 ALGORITHM = 'HS256'
@@ -59,6 +59,19 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     
-    to_encode.update({'expire': expire})
+    to_encode.update({'exp': expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, ALGORITHM)
     return encoded_jwt
+
+def create_user(
+    db: Session,
+    create_user: CreateUser
+):
+    hashed_password = password_hash.hash(create_user.password)
+    user = User(
+        username=create_user.username,
+        hashed_password=hashed_password
+    )
+    db.add(user)
+    db.commit()
+    
