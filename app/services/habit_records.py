@@ -36,3 +36,17 @@ def modify_record(
         for k, v in record_dict.items():
             setattr(record, k, v)
         db.commit()
+
+def delete_record(
+    db: Session,
+    record_id: int
+):
+    record = db.scalars(
+        select(HabitRecord).where(HabitRecord.id==record_id)
+    ).one()
+    
+    if not record:
+        raise ValueError(f'Habit Record {record_id} does not exist')
+    else:
+        db.delete(record)
+        db.commit()
