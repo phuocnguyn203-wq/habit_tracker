@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
-class UserIn(BaseModel):
+class BaseUser(BaseModel):
     username: str
+
+class CreateUser(BaseUser):
     password: str
 
 class Token(BaseModel):
@@ -11,5 +13,5 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str | None = None
 
-class UserDB(BaseModel):
+class UserInDB(BaseUser):
     hashed_password: str
