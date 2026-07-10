@@ -39,5 +39,28 @@ def get_habit(
     db: Annotated[Session, Depends(get_db)],
     habit_id: Annotated[int, Path()],
 ):
-    habit = habit_service.get_habit(db, habit_id)
-    return habit
+    try:
+        habit = habit_service.get_habit(db, habit_id)
+        return habit
+    except ValueError as e:
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'{str(e)}'
+        )
+@router.put('/{habit_id}')
+def modify_habit(
+    db: Annotated[Session, Depends(get_db)],
+    habit_id: Annotated[int, Path()],
+    modify_habit: Annotated[CreateHabit, Body()]
+):
+    try:
+        habit_service.modify_habit(
+            db,
+            habit_id,
+            modify_habit
+        )
+    except ValueError as e:
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'{str(e)}'
+        )

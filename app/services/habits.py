@@ -28,4 +28,20 @@ def get_habit(
     if result is not None:
         return result[0]
     else:
-        return None
+        raise ValueError(f'Habit {habit_id} does not exist')
+
+def modify_habit(
+    db: Session,
+    habit_id: int,
+    modify_habit: CreateHabit
+):
+    stmt = select(Habit).where(Habit.id==habit_id)
+    result = db.execute(stmt).first()
+    if result is not None:
+        habit = result[0]
+        modify_dict = modify_habit.model_dump()
+        for k, v in modify_dict.items():
+            setattr(habit, k, v)
+        db.commit()
+    else:
+        raise ValueError(f'Habit {habit_id} does not exist')
