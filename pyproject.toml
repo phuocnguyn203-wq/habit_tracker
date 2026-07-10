@@ -7,7 +7,9 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.139.0",
     "ipython>=9.15.0",
+    "pwdlib[argon2]>=0.3.0",
     "pydantic>=2.13.4",
+    "pyjwt>=2.13.0",
     "pytest>=9.1.1",
     "sqlalchemy>=2.0.51",
     "typing>=3.10.0.0",
