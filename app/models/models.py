@@ -22,7 +22,6 @@ class HabitRecord(Base):
     habit_id: Mapped[int] = mapped_column(ForeignKey('habits.id'))
     date: Mapped[datetime] = mapped_column(default=datetime.now(UTC))
     value: Mapped[float] = mapped_column(Float)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now(UTC))
     habit: Mapped['Habit'] = relationship(back_populates='habit_records')
 
 class User(Base):
