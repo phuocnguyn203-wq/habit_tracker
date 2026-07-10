@@ -20,3 +20,19 @@ def get_records(
     stmt = select(HabitRecord).where(HabitRecord.habit_id==habit_id)
     results = db.execute(stmt).scalars().all()
     return results
+
+def modify_record(
+    db: Session,
+    record_id: int,
+    new_record: CreateHabitRecord,
+):
+    stmt = select(HabitRecord).where(HabitRecord.id==record_id)
+    result = db.execute(stmt).first()
+    if result is None:
+        raise ValueError(f'Habit Record {record_id} does not exist')
+    else:
+        record = result[0]
+        record_dict = new_record.model_dump()
+        for k, v in record_dict.items():
+            setattr(record, k, v)
+        db.commit()

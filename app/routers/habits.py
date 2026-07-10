@@ -45,7 +45,7 @@ def get_habit(
     except ValueError as e:
         return HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'{str(e)}'
+            detail=str(e)
         )
 @router.put('/{habit_id}')
 def modify_habit(
@@ -62,7 +62,7 @@ def modify_habit(
     except ValueError as e:
         return HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'{str(e)}'
+            detail=str(e)
         )
 
 @router.delete('/{habit_id}')
@@ -78,5 +78,5 @@ def delete_habit(
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'{str(e)}'
+            detail=str(e)
         )

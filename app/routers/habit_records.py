@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Path, Body, Depends, status
+from fastapi import APIRouter, Path, Body, Depends, status, HTTPException
 from app.dependencies import get_db
 
 from app.schemas.habit_records import CreateHabitRecord
@@ -32,3 +32,21 @@ def get_habit_records(
         habit_id
     )
     return results
+
+@router.put('/{record_id}')
+def modify_habit_records(
+    db: Annotated[Session, Depends(get_db)],
+    record_id: Annotated[int, Path()],
+    record: Annotated[CreateHabitRecord, Body()]
+):
+    try:
+        habit_records_service.modify_record(
+            db,
+            record_id,
+            record
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
