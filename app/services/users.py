@@ -30,10 +30,7 @@ def get_user(
     ).one()
     if not user:
         return None
-    return UserInDB(
-        username=user.username,
-        hashed_password=user.hashed_password,
-    )
+    return user
 
 def authenticate_user(
     db: Session,
