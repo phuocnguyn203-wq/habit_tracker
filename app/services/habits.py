@@ -6,24 +6,30 @@ from sqlalchemy import select
 
 def create_habit(
     db: Session,
-    create_habit: CreateHabit
+    create_habit: CreateHabit,
+    user_id: int
 ):
-    habit = Habit(**create_habit.model_dump())
-    db.add(habit)
+    habit = Habit(**create_habit.model_dump(), user_id=user_id)
+    try:
+        db.add(habit)
+    except Exception as e:
+        raise ValueError(f'Check user_id')
     db.commit()
 
 def get_all_habits(
     db: Session,
+    user_id: int,
 ):
-    stmt = select(Habit)
+    stmt = select(Habit).where(Habit.user_id==user_id)
     habits = db.scalars(stmt).all()
     return habits
 
 def get_habit(
     db: Session,
-    habit_id: int
+    habit_id: int,
+    user_id: int,
 ):
-    stmt = select(Habit).where(Habit.id==habit_id)
+    stmt = select(Habit).where(Habit.id==habit_id).where(Habit.user_id==user_id)
     result = db.execute(stmt).first()
     if result is not None:
         return result[0]
@@ -33,9 +39,10 @@ def get_habit(
 def modify_habit(
     db: Session,
     habit_id: int,
+    user_id: int,
     modify_habit: CreateHabit
 ):
-    stmt = select(Habit).where(Habit.id==habit_id)
+    stmt = select(Habit).where(Habit.id==habit_id).where(Habit.user_id==user_id)
     result = db.execute(stmt).first()
     if result is not None:
         habit = result[0]
@@ -48,9 +55,10 @@ def modify_habit(
 
 def delete_habit(
     db: Session,
+    user_id: int,
     habit_id: int,
 ):
-    result = db.execute(select(Habit).where(Habit.id==habit_id)).first()
+    result = db.execute(select(Habit).where(Habit.id==habit_id).where(Habit.user_id==user_id)).first()
     if result is not None:
         habit = result[0]
         db.delete(habit)
