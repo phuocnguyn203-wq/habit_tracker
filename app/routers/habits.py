@@ -22,7 +22,7 @@ def create_habit(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
     try:
-        habit_service.create_habit(
+        return habit_service.create_habit(
             db,
             habit,
             current_user.id,
@@ -58,7 +58,7 @@ def get_habit(
             current_user.id,)
         return habit
     except ValueError as e:
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
         )
@@ -70,14 +70,14 @@ def modify_habit(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     try:
-        habit_service.modify_habit(
+        return habit_service.modify_habit(
             db,
             habit_id,
             current_user.id,
             modify_habit
         )
     except ValueError as e:
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e)
         )

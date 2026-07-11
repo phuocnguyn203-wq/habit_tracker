@@ -12,7 +12,7 @@ class Habit(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
     name: Mapped[str] = mapped_column(String(50))
     description: Mapped[str]
-    create_at: Mapped[datetime] = mapped_column(default=datetime.now(UTC))
+    create_at: Mapped[datetime] = mapped_column(default=lambda: datetime.now(UTC))
     habit_records: Mapped[list['HabitRecord']] = relationship(back_populates='habit', cascade='all, delete-orphan')
     
 class HabitRecord(Base):
@@ -27,5 +27,5 @@ class HabitRecord(Base):
 class User(Base):
     __tablename__ = 'users'
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str]
+    username: Mapped[str] = mapped_column(unique=True, index=True)
     hashed_password: Mapped[str]

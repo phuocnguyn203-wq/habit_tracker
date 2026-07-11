@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Habit Tracker</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">Habit Tracker</div>
+  <div class="user-box hidden" id="userBox">
+    <span class="username" id="usernameLabel"></span>
+    <button class="btn btn-ghost" id="logoutBtn">Log out</button>
+  </div>
+</header>
+
+<main id="authView" class="auth-view">
+  <div class="auth-card">
+    <div class="tabs">
+      <button class="tab active" data-tab="login">Log in</button>
+      <button class="tab" data-tab="register">Register</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <label>Username
+        <input type="text" name="username" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="btn btn-primary">Log in</button>
+      <p class="form-error" id="loginError"></p>
+    </form>
+
+    <form id="registerForm" class="auth-form hidden">
+      <label>Username
+        <input type="text" name="username" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input type="password" name="password" autocomplete="new-password" required minlength="4">
+      </label>
+      <button type="submit" class="btn btn-primary">Create account</button>
+      <p class="form-error" id="registerError"></p>
+    </form>
+  </div>
+</main>
+
+<main id="appView" class="app-view hidden">
+  <section class="habits-panel">
+    <div class="panel-header">
+      <h2>Habits</h2>
+      <button class="btn btn-primary btn-sm" id="newHabitBtn">+ New</button>
+    </div>
+    <div class="habits-list" id="habitsList"></div>
+  </section>
+
+  <section class="detail-panel" id="detailPanel">
+    <div class="empty-state" id="emptyState">Select a habit, or create a new one, to see its activity.</div>
+
+    <div class="habit-detail hidden" id="habitDetail">
+      <div class="habit-detail-header">
+        <div>
+          <h2 id="habitName"></h2>
+          <p id="habitDescription" class="muted"></p>
+          <p class="muted small" id="habitCreated"></p>
+        </div>
+        <div class="habit-actions">
+          <button class="btn btn-ghost btn-sm" id="editHabitBtn">Edit</button>
+          <button class="btn btn-danger btn-sm" id="deleteHabitBtn">Delete</button>
+        </div>
+      </div>
+
+      <div class="calendar-card">
+        <div class="calendar-scroll">
+          <div class="calendar" id="calendar"></div>
+        </div>
+        <div class="calendar-legend">
+          <span id="totalSummary"></span>
+          <span class="legend-scale">
+            Less
+            <i class="cell lvl-0"></i><i class="cell lvl-1"></i><i class="cell lvl-2"></i><i class="cell lvl-3"></i><i class="cell lvl-4"></i>
+            More
+          </span>
+        </div>
+      </div>
+
+      <div class="record-form-card">
+        <h3>Log a record</h3>
+        <form id="recordForm" class="record-form">
+          <label>Date
+            <input type="date" name="date" id="recordDate" required>
+          </label>
+          <label>Value
+            <input type="number" name="value" id="recordValue" step="any" value="1" required>
+          </label>
+          <button type="submit" class="btn btn-primary btn-sm">Add</button>
+        </form>
+        <p class="form-error" id="recordError"></p>
+      </div>
+
+      <div class="records-table-card">
+        <h3>All records</h3>
+        <table class="records-table">
+          <thead><tr><th>Date</th><th>Value</th><th></th></tr></thead>
+          <tbody id="recordsTableBody"></tbody>
+        </table>
+        <p class="muted small" id="noRecords">No records yet.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-backdrop hidden" id="habitModalBackdrop">
+  <div class="modal">
+    <h3 id="habitModalTitle">New habit</h3>
+    <form id="habitModalForm">
+      <label>Name
+        <input type="text" name="name" id="habitFormName" maxlength="50" required>
+      </label>
+      <label>Description
+        <input type="text" name="description" id="habitFormDescription" required>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="habitModalCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+      <p class="form-error" id="habitModalError"></p>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="dayModalBackdrop">
+  <div class="modal">
+    <h3 id="dayModalTitle">Day</h3>
+    <div id="dayModalItems" class="day-modal-items"></div>
+    <form id="dayModalForm">
+      <label>Add a value for this day
+        <input type="number" name="value" id="dayModalValue" step="any" value="1" required>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="dayModalCancel">Close</button>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+      <p class="form-error" id="dayModalError"></p>
+    </form>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

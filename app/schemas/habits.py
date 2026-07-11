@@ -4,5 +4,4 @@ from datetime import datetime, UTC
 class CreateHabit(BaseModel):
     name: str = Field(max_length=50)
     description: str
-    create_at: datetime = Field(default=datetime.now(UTC))
-    
+    create_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

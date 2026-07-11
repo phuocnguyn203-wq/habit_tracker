@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from pwdlib import PasswordHash
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from sqlalchemy.orm import Session
 from app.models.models import User
@@ -25,12 +26,9 @@ def get_user(
     db: Session,
     username: str,
 ):
-    user = db.scalars(
+    return db.scalars(
         select(User).where(User.username==username)
-    ).one()
-    if not user:
-        return None
-    return user
+    ).first()
 
 def authenticate_user(
     db: Session,
@@ -70,5 +68,10 @@ def create_user(
         hashed_password=hashed_password
     )
     db.add(user)
-    db.commit()
-    
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise ValueError(f'Username {create_user.username} is already taken')
+    db.refresh(user)
+    return user

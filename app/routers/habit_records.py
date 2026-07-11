@@ -21,11 +21,17 @@ def create_habit_records(
     create_habit_record: Annotated[CreateHabitRecord, Body()],
     current_user: Annotated[User, Depends(get_current_user)],
 ):
-    habit_records_service.create_record(
-        db,
-        create_habit_record,
-        current_user.id,
-    )
+    try:
+        return habit_records_service.create_record(
+            db,
+            create_habit_record,
+            current_user.id,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
 
 @router.get('/{habit_id}')
 def get_habit_records(
@@ -48,7 +54,7 @@ def modify_habit_records(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
     try:
-        habit_records_service.modify_record(
+        return habit_records_service.modify_record(
             db,
             record_id,
             record,

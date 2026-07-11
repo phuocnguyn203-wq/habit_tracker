@@ -45,17 +45,23 @@ async def login_for_access_token(
         token_type='bearer'
     )
     
-@router.post('/create_user')
+@router.post('/create_user', response_model=BaseUser)
 def create_user(
     db: Annotated[Session, Depends(get_db)],
     create_user: Annotated[CreateUser, Body()],
 ):
-    user_service.create_user(
-        db,
-        create_user
-    )
+    try:
+        return user_service.create_user(
+            db,
+            create_user
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
 
-@router.get('/user/me/')
+@router.get('/user/me/', response_model=BaseUser)
 async def read_users_me(
     current_user: Annotated[BaseUser, Depends(get_current_user)]
 ):

@@ -10,11 +10,10 @@ def create_habit(
     user_id: int
 ):
     habit = Habit(**create_habit.model_dump(), user_id=user_id)
-    try:
-        db.add(habit)
-    except Exception as e:
-        raise ValueError(f'Check user_id')
+    db.add(habit)
     db.commit()
+    db.refresh(habit)
+    return habit
 
 def get_all_habits(
     db: Session,
@@ -50,6 +49,8 @@ def modify_habit(
         for k, v in modify_dict.items():
             setattr(habit, k, v)
         db.commit()
+        db.refresh(habit)
+        return habit
     else:
         raise ValueError(f'Habit {habit_id} does not exist')
 

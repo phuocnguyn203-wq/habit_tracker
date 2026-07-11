@@ -1,6 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class BaseUser(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     username: str
 
 class CreateUser(BaseUser):

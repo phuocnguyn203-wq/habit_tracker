@@ -13,13 +13,15 @@ def create_record(
     #find habit
     stmt = select(Habit)\
         .where(Habit.id==create_habit_record.habit_id)
-    habit = db.execute(stmt).scalar_one()
-    if not habit:
+    habit = db.execute(stmt).scalar_one_or_none()
+    if habit is None:
         raise ValueError(f'Habit {create_habit_record.habit_id} does not exist')
     elif habit.user_id == user_id:
         habit_record = HabitRecord(**create_habit_record.model_dump())
         db.add(habit_record)
         db.commit()
+        db.refresh(habit_record)
+        return habit_record
     else:
         raise ValueError(f'Wrong user_id')
     
@@ -46,7 +48,7 @@ def modify_record(
         .select_from(HabitRecord)\
             .join(Habit, HabitRecord.habit_id==Habit.id)\
                 .where(Habit.user_id==user_id)\
-                    .where(Habit.id==record_id)
+                    .where(HabitRecord.id==record_id)
     result = db.execute(stmt).first()
     if result is None:
         raise ValueError(f'Habit Record {record_id} does not exist')
@@ -56,6 +58,8 @@ def modify_record(
         for k, v in record_dict.items():
             setattr(record, k, v)
         db.commit()
+        db.refresh(record)
+        return record
 
 def delete_record(
     db: Session,
@@ -69,9 +73,9 @@ def delete_record(
                     .where(HabitRecord.id==record_id)
     record = db.scalars(
         stmt
-    ).one()
-    
-    if not record:
+    ).first()
+
+    if record is None:
         raise ValueError(f'Habit Record {record_id} does not exist')
     else:
         db.delete(record)
